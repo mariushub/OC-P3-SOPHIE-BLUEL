@@ -209,55 +209,30 @@ function handleCreateModale(e) {
   let fileBtn = document.querySelector("#fileBtn");
   let fileInput = document.querySelector("#fileInput");
   let form = document.querySelector("#galleryAddForm");
-  let file;
 
-  function imageToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
+  // file input is mapped to html
   fileBtn.addEventListener("click", (e) => {
     e.preventDefault();
     fileInput.click();
   });
 
-  fileInput.addEventListener("change", function () {
-    file = this.files[0];
-    // showImg();
-  });
-
+  // when form is submited
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    // const formData = new FormData(form);
+    const formData = new FormData(form);
     const session = window.localStorage.getItem("session");
-
-    let image = fileInput.files[0];
-    let title = document.querySelector("#titleForm").value;
-    let category = document.querySelector("#categoryForm").value;
-
-    formData.append("image", image);
-    formData.append("title", title);
-    formData.append("category", category);
 
     console.log(formData);
 
     const response = await fetch(`http://localhost:5678/api/works/`, {
       method: "POST",
-      body: {formData},
+      body: formData,
       headers: {
-        accept: "application/json",
-        "Content-Type": "application/json",
-        // Authorization: `Bearer ${session}`,
+        Authorization: `Bearer ${session}`,
       },
     });
 
-    // console.log(image);
-    // console.log(response);
+    console.log(response);
   });
 }
 
