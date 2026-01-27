@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-    <meta charset="UTF-8">
+	<meta charset="UTF-8">
 	<title>Sophie Bluel - Architecte d'intérieur</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,8 +11,45 @@
 		rel="stylesheet">
 	<meta name="description" content="">
 	<link rel="stylesheet" href="./assets/style.css">
+	<link rel="icon" type="image/x-icon" href="/FrontEnd/favicon.ico">
+	<script src="login.js" defer></script>
 </head>
+
 <body>
-    login
+	<header>
+		<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+		<nav>
+			<ul>
+				<li><a href="./index.html#portfolio">projets</a></li>
+				<li><a href="./index.html#contact">contact</a></li>
+				<li><a href="./login.html">login</a></li>
+				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+			</ul>
+		</nav>
+	</header>
+
+	<main>
+		<section id="contact">
+			<h2>Log in</h2>
+			<form id="login" method="post">
+				<label for="email">E-mail</label>
+				<input type="email" name="email" id="email">
+				<label for="pass">Mot de passe</label>
+				<input type="password" name="password" id="pass">
+				<input type="submit" value="Se connecter">
+			</form>
+			<span class="error hide">error</span>
+			<span>Mot de passe oublié</span>
+		</section>
+	</main>
+
+	<footer>
+		<nav>
+			<ul>
+				<li>Mentions Légales</li>
+			</ul>
+		</nav>
+	</footer>
 </body>
+
 </html>
