@@ -32,7 +32,7 @@
           <li><a href="#portfolio">projets</a></li>
           <li><a href="#contact">contact</a></li>
           <li id="login" class="hide"><a href="./login.html">login</a></li>
-          <li id="logout" class="hide"><button onclick="handleLogout()">logout</button></li>
+          <li id="logout" class="hide"><button id="logoutBtn">logout</button></li>
           <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
         </ul>
       </nav>
@@ -65,7 +65,7 @@
         <div class="backdrop"></div>
         <div id="galleryEdit" class="galleryEdit hide">
           <div class="galleryEdit__header">
-            <button onclick="handleCloseModale()" class="galleryEdit__close">
+            <button id="closeModaleBtn" class="galleryEdit__close">
               <svg
                 width="12"
                 height="13"
@@ -91,7 +91,7 @@
             <button class="galleryAdd__close galleryAdd__back">
               <i class="fa-solid fa-lg fa-arrow-left"></i>
             </button>
-            <button onclick="handleCloseModale()" class="galleryAdd__close">
+            <button id="closeModaleBtn" class="galleryAdd__close">
               <svg
                 width="12"
                 height="13"
@@ -117,21 +117,21 @@
                 <span id="error" class="hide">fichier trop lourd : 4mo max</span>
               </div>
               <!-- hided input -->
-              <input required name="image" id="fileInput" type="file" accept="image/png, image/jpeg" />
+              <input name="image" id="fileInput" type="file" accept="image/png, image/jpeg" />
               <!-- image preview here -->
               <div id="imagePreview" class="hide">
 
               </div>
               <label for="title">Titre</label>
-              <input required type="text" name="title" id="titleForm" />
+              <input type="text" name="title" id="titleForm" />
               <label for="category">Catégorie</label>
-              <select required name="category" id="categoryForm">
+              <select name="category" id="categoryForm">
                 <option value=""></option>
               </select>
             </form>
           </div>
           <div class="galleryAdd__footer">
-            <input id="galleryAddSubmit" type="submit" form="galleryAddForm" value="Valider" class="galleryAdd__btn"></input>
+            <button id="galleryAddSubmit" type="submit" form="galleryAddForm" disabled value="Valider" class="galleryAdd__btn">Valider</button>
             <i class="fa-solid fa-alarm-clock"></i>
           </div>
         </div>
@@ -140,7 +140,7 @@
       <section id="portfolio">
         <div class="portfolio__flex">
           <h2>Mes Projets</h2>
-          <button id="editBtn" class="hide" onclick="handleShowModale()">
+          <button id="editBtn" class="hide">
             <div class="icon">
               <svg
                 width="16"

@@ -130,6 +130,37 @@ async function loadCreateModale() {
 
     initFile();
 
+    // check on each input if all input are valid
+    document.querySelector("#titleForm").addEventListener("change", () => {
+      let input1 = document.querySelector("#categoryForm");
+      let input2 = document.querySelector("#fileInput");
+      let submitBtn = document.querySelector("#galleryAddSubmit")
+
+      if (input1.value && input2.value) {
+        submitBtn.disabled = false
+      }
+    });
+
+    document.querySelector("#categoryForm").addEventListener("change", () => {
+      let input1 = document.querySelector("#titleForm");
+      let input2 = document.querySelector("#fileInput");
+      let submitBtn = document.querySelector("#galleryAddSubmit")
+
+      if (input1.value && input2.value) {
+        submitBtn.disabled = false
+      }
+    });
+
+    document.querySelector("#fileInput").addEventListener("change", () => {
+      let input1 = document.querySelector("#titleForm");
+      let input2 = document.querySelector("#categoryForm");
+      let submitBtn = document.querySelector("#galleryAddSubmit")
+
+      if (input1.value && input2.value) {
+        submitBtn.disabled = false
+      }
+    });
+
     // when form is submited we post it to the api
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -182,7 +213,7 @@ async function loadCreateModale() {
       worksContainer.appendChild(figure);
 
       // response
-      document.getElementById("work-" + data.id).scrollIntoView()
+      document.getElementById("work-" + data.id).scrollIntoView();
     });
   } else {
     console.warn("categories in create modal is not valid");
@@ -235,14 +266,7 @@ function handleLogout() {
   document.getElementById("filters").classList = "filters";
 }
 
-async function handleShowModale(arg) {
-
-  if (arg) {
-    
-  } else {
-
-  }
-
+async function handleShowModale() {
   // get the work from api
   const list = document.querySelector(".galleryEdit__content");
   const works = await fetchData("http://localhost:5678/api/works");
@@ -325,6 +349,8 @@ async function handleShowModale(arg) {
 // only call in one dom element to hide modale
 function handleCloseModale() {
   document.getElementById("edit").classList = "hide";
+  document.getElementById("galleryAddForm").reset()
+  document.querySelector("#galleryAddSubmit").disabled = true
 }
 
 // here we load all function and do stuff on page load
@@ -333,7 +359,7 @@ async function pageLoad() {
 
   loadWorks();
   await loadFilters();
-  loadCreateModale();
+  await loadCreateModale();
 
   // if we have an id from url params then we select it else we just use tous as default
   if (id) {
@@ -356,6 +382,26 @@ async function pageLoad() {
     document.getElementById("editmode").classList = "hide";
     document.getElementById("filters").classList = "filters";
   }
+
+  // event listener logout
+  document.querySelector("#logoutBtn").addEventListener("click", () => {
+    handleLogout();
+  });
+
+  // event listener show gallery modale
+  document.querySelector("#editBtn").addEventListener("click", () => {
+    handleShowModale();
+  });
+
+  // event listener for all close btn of the modale
+  document.querySelectorAll("#closeModaleBtn").forEach((e) => {
+    e.addEventListener("click", () => {
+      handleCloseModale();
+    });
+  });
+
+  document.getElementById("galleryAddForm").reset()
+  document.querySelector("#galleryAddSubmit").disabled = true
 }
 
 pageLoad();
