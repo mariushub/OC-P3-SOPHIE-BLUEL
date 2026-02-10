@@ -21,6 +21,10 @@
   </head>
 
   <body>
+    <header id="editmode" class="hide">
+      <i class="fa-solid fa-pen-to-square"></i>
+      <h3>Mode édition</h3>
+    </header>
     <header>
       <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
       <nav>
@@ -105,22 +109,29 @@
           <h3 class="galleryAdd__title">Ajout photo</h3>
           <div class="galleryAdd__content">
             <form id="galleryAddForm" action="#" method="post">
-              <div class="image">
+              <!-- file btn here -->
+              <div id="file" class="image">
                 <i class="fa-solid fa-image"></i>
                 <button id="fileBtn">+ Ajouter photo</button>
                 <span>jpg, png : 4mo max</span>
-                <input name="image" id="fileInput" type="file" hidden />
+                <span id="error" class="hide">fichier trop lourd : 4mo max</span>
+              </div>
+              <!-- hided input -->
+              <input required name="image" id="fileInput" type="file" accept="image/png, image/jpeg" />
+              <!-- image preview here -->
+              <div id="imagePreview" class="hide">
+
               </div>
               <label for="title">Titre</label>
-              <input type="text" name="title" id="titleForm" />
+              <input required type="text" name="title" id="titleForm" />
               <label for="category">Catégorie</label>
-              <select name="category" id="categoryForm">
+              <select required name="category" id="categoryForm">
                 <option value=""></option>
               </select>
             </form>
           </div>
           <div class="galleryAdd__footer">
-            <input id="galleryAddSubmit" type="submit" form="galleryAddForm" class="galleryAdd__btn">Valider</input>
+            <input id="galleryAddSubmit" type="submit" form="galleryAddForm" value="Valider" class="galleryAdd__btn"></input>
             <i class="fa-solid fa-alarm-clock"></i>
           </div>
         </div>
@@ -147,7 +158,7 @@
             <span>modifier</span>
           </button>
         </div>
-        <div class="filters">
+        <div id="filters" class="filters">
           <button id="tous" class="filter">Tous</button>
 
           <!-- here filters loaded from api -->

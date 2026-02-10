@@ -81,11 +81,12 @@ async function loadCreateModale() {
   const categories = await fetchData("http://localhost:5678/api/categories");
   const categoriesSelect = document.querySelector("#categoryForm");
   const form = document.querySelector("#galleryAddForm");
+  let imagePreview = document.querySelector("#imagePreview");
+  let fileImage = document.querySelector("#file");
 
   // file droping logic
   function initFile() {
     let fileBtn = document.querySelector("#fileBtn");
-    let fileImage = document.querySelector(".image");
     let fileInput = document.querySelector("#fileInput");
 
     // file input is mapped to html
@@ -95,18 +96,25 @@ async function loadCreateModale() {
     });
 
     // when the user select an image we show it
-    fileInput.addEventListener("change", (e) => {
+    fileInput.addEventListener("change", () => {
       let file = fileInput.files[0];
       let url = window.URL.createObjectURL(file);
       let img = document.createElement("img");
 
+      if (file.size > 4 * 1024 * 1024) {
+        fileInput.value = "";
+        document.querySelector("#error").className = "error";
+        return;
+      }
+
+      document.querySelector("#error").className = "hide";
+
       img.src = url;
 
-      fileImage.childNodes[1].remove();
-      fileImage.childNodes[2].remove();
-      fileImage.childNodes[3].remove();
+      fileImage.className = "hide";
+      imagePreview.className = "image";
 
-      fileImage.appendChild(img);
+      imagePreview.appendChild(img);
     });
   }
 
@@ -143,12 +151,17 @@ async function loadCreateModale() {
         return;
       }
 
+      form.reset();
+
       // close the modal
       document.getElementById("edit").classList = "hide";
 
+      // close the image preview
+      fileImage.className = "image";
+      imagePreview.className = "hide";
+
       // create the new work
       const data = await response.json();
-      console.log(data);
       const worksContainer = document.querySelector(".gallery");
       let figure = document.createElement("figure");
       let image = document.createElement("img");
@@ -167,6 +180,9 @@ async function loadCreateModale() {
       figure.appendChild(caption);
 
       worksContainer.appendChild(figure);
+
+      // response
+      document.getElementById("work-" + data.id).scrollIntoView()
     });
   } else {
     console.warn("categories in create modal is not valid");
@@ -178,6 +194,7 @@ async function loadCreateModale() {
 function handleFilterChange(e) {
   // id origin change if arg is event or direct id
   const id = e.target ? e.target.id : e;
+
   // get all the currents filters from dom and slice them into array
   const filters = Array.prototype.slice.call(
     document.querySelectorAll(".filter"),
@@ -207,10 +224,15 @@ function handleFilterChange(e) {
   window.history.replaceState({}, "", `${url}?${urlParams}`);
 }
 
-// reset localstorage and reload page
+// remove session and hide all admin parts without reloading page
 function handleLogout() {
   localStorage.removeItem("session");
-  location.reload();
+
+  document.getElementById("login").classList = "";
+  document.getElementById("logout").classList = "hide";
+  document.getElementById("editBtn").classList = "hide";
+  document.getElementById("editmode").classList = "hide";
+  document.getElementById("filters").classList = "filters";
 }
 
 async function handleShowModale() {
@@ -256,15 +278,13 @@ async function handleShowModale() {
         });
 
         if (response.ok) {
-          console.log(response);
-
           let deletedImageModal = document.querySelector("#modal-" + work.id);
           deletedImageModal.remove();
 
           let deletedWork = document.querySelector("#work-" + work.id);
           deletedWork.remove();
         } else {
-          console.log(response);
+          console.error("error deleting work : " + response.status);
         }
       });
 
@@ -275,13 +295,14 @@ async function handleShowModale() {
       list.appendChild(card);
     });
 
-    // show the createModale
+    // listener to show create modal when user press ajouter photo
     galleryAddBtn.addEventListener("click", () => {
       document.getElementById("edit").classList = "";
       document.getElementById("galleryEdit").classList = "galleryEdit hide";
       document.getElementById("galleryAdd").classList = "galleryAdd";
     });
 
+    // in create modal back arrow to return to delete modal
     document
       .querySelector(".galleryAdd__back")
       .addEventListener("click", () => {
@@ -294,7 +315,7 @@ async function handleShowModale() {
   }
 }
 
-// only call in one dom element maybe add listener
+// only call in one dom element to hide modale
 function handleCloseModale() {
   document.getElementById("edit").classList = "hide";
 }
@@ -303,9 +324,9 @@ function handleCloseModale() {
 async function pageLoad() {
   const id = urlParams.get("filter");
 
-  await loadWorks();
+  loadWorks();
   await loadFilters();
-  await loadCreateModale();
+  loadCreateModale();
 
   // if we have an id from url params then we select it else we just use tous as default
   if (id) {
@@ -319,10 +340,14 @@ async function pageLoad() {
     document.getElementById("login").classList = "hide";
     document.getElementById("logout").classList = "";
     document.getElementById("editBtn").classList = "";
+    document.getElementById("editmode").classList = "";
+    document.getElementById("filters").classList = "hide";
   } else {
     document.getElementById("login").classList = "";
     document.getElementById("logout").classList = "hide";
     document.getElementById("editBtn").classList = "hide";
+    document.getElementById("editmode").classList = "hide";
+    document.getElementById("filters").classList = "filters";
   }
 }
 

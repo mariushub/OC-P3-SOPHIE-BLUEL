@@ -18,18 +18,21 @@ async function handleSubmit(e) {
 
     // switch case between response code error
     if (!response.ok) {
+      let error = document.getElementById("error")
+      console.log(error)
       if (response.status === 401) {
-        alert("mot de passe incorecte");
-        document.getElementsByClassName("error").classlist = "error";
-        document.getElementsByClassName("error").innerText = "qsfqsfqsf";
+        console.warn("wrong password")
+        error.className = "error";
+        error.innerText = "wrong password";
         return;
       } else if (response.status === 404) {
-        alert("utilisateur inconu");
+        console.warn("user not found")
+        error.className = "error";
+        error.innerText = "user not found";
         return;
       } else {
         alert("erreur server");
         throw new Error(`Response status: ${response.status}`);
-        return;
       }
     }
 
