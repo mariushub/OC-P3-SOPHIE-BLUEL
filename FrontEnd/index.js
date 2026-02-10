@@ -235,7 +235,14 @@ function handleLogout() {
   document.getElementById("filters").classList = "filters";
 }
 
-async function handleShowModale() {
+async function handleShowModale(arg) {
+
+  if (arg) {
+    
+  } else {
+
+  }
+
   // get the work from api
   const list = document.querySelector(".galleryEdit__content");
   const works = await fetchData("http://localhost:5678/api/works");
