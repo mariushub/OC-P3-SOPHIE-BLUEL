@@ -31,6 +31,7 @@ async function loadWorks() {
 
     figure.dataset.id = work.id;
     figure.dataset.category = work.categoryId;
+    figure.id = "work-" + work.id;
 
     image.src = work.imageUrl;
     image.alt = work.title;
@@ -128,6 +129,7 @@ async function handleShowModale(e) {
     let btn = document.createElement("button");
     let ico = document.createElement("i");
     card.classList = "galleryEdit__card";
+    card.id = "modal-" + work.id;
 
     ico.classList = "fa-solid fa-trash-can";
     ico.id = work.id;
@@ -139,17 +141,26 @@ async function handleShowModale(e) {
       const session = window.localStorage.getItem("session");
       const id = e.target.id;
 
-      // const response = await fetch(`http://localhost:5678/api/works/${id}`, {
-      //     method: "DELETE",
-      //     headers: {
-      //         'accept': 'application/json',
-      //         'Content-Type': 'application/json',
-      //         'Authorization': `Bearer ${session}`
-      //     },
-      // });
+      const response = await fetch(`http://localhost:5678/api/works/${id}`, {
+        method: "DELETE",
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session}`,
+        },
+      });
 
-      console.log(session);
-      console.log(e.target.id);
+      if (response.ok) {
+        console.log(response);
+
+        let deletedImageModal = document.querySelector("#modal-" + work.id);
+        deletedImageModal.remove();
+
+        let deletedWork = document.querySelector("#work-" + work.id);
+        deletedWork.remove();
+      } else {
+        console.log(response);
+      }
     });
 
     btn.appendChild(ico);
@@ -204,11 +215,23 @@ function renderNav(links) {
   });
 }
 
-function handleCreateModale(e) {
+async function handleCreateModale(e) {
   // file droping logic
   let fileBtn = document.querySelector("#fileBtn");
+  let fileImage = document.querySelector(".image");
   let fileInput = document.querySelector("#fileInput");
   let form = document.querySelector("#galleryAddForm");
+
+  // load all categories
+  const categories = await fetchData("http://localhost:5678/api/categories");
+  let categoriesSelect = document.querySelector("#categoryForm");
+  categories.forEach((categorie, index) => {
+    let newCategorie = document.createElement("option");
+    newCategorie.value = categorie.id;
+    newCategorie.innerText = categorie.name;
+
+    categoriesSelect.appendChild(newCategorie);
+  });
 
   // file input is mapped to html
   fileBtn.addEventListener("click", (e) => {
@@ -216,23 +239,66 @@ function handleCreateModale(e) {
     fileInput.click();
   });
 
-  // when form is submited
+  // when the user select an image we show it
+  fileInput.addEventListener("change", (e) => {
+    let file = fileInput.files[0];
+    let url = window.URL.createObjectURL(file);
+    let img = document.createElement("img");
+
+    img.src = url;
+    console.log(fileImage.childNodes);
+
+    fileImage.childNodes[1].remove();
+    fileImage.childNodes[2].remove();
+    fileImage.childNodes[3].remove();
+
+    fileImage.appendChild(img);
+  });
+
+  // when form is submited we post it to the api
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const formData = new FormData(form);
     const session = window.localStorage.getItem("session");
 
-    console.log(formData);
-
-    const response = await fetch(`http://localhost:5678/api/works/`, {
+    // update object in back
+    const data = await fetch(`http://localhost:5678/api/works/`, {
       method: "POST",
       body: formData,
       headers: {
         Authorization: `Bearer ${session}`,
       },
+    })
+    // check everything went well
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
     });
 
-    console.log(response);
+    handleCloseModale();
+    console.log(data);
+
+    // create the new work
+    const worksContainer = document.querySelector(".gallery");
+    let figure = document.createElement("figure");
+    let image = document.createElement("img");
+    let caption = document.createElement("figcaption");
+
+    figure.dataset.id = data.id;
+    figure.dataset.category = data.categoryId;
+    figure.id = "work-" + data.id;
+
+    image.src = data.imageUrl;
+    image.alt = data.title;
+
+    caption.innerText = data.title;
+
+    figure.appendChild(image);
+    figure.appendChild(caption);
+
+    worksContainer.appendChild(figure);
   });
 }
 
