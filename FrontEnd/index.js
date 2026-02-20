@@ -134,30 +134,30 @@ async function loadCreateModale() {
     document.querySelector("#titleForm").addEventListener("change", () => {
       let input1 = document.querySelector("#categoryForm");
       let input2 = document.querySelector("#fileInput");
-      let submitBtn = document.querySelector("#galleryAddSubmit")
+      let submitBtn = document.querySelector("#galleryAddSubmit");
 
       if (input1.value && input2.value) {
-        submitBtn.disabled = false
+        submitBtn.disabled = false;
       }
     });
 
     document.querySelector("#categoryForm").addEventListener("change", () => {
       let input1 = document.querySelector("#titleForm");
       let input2 = document.querySelector("#fileInput");
-      let submitBtn = document.querySelector("#galleryAddSubmit")
+      let submitBtn = document.querySelector("#galleryAddSubmit");
 
       if (input1.value && input2.value) {
-        submitBtn.disabled = false
+        submitBtn.disabled = false;
       }
     });
 
     document.querySelector("#fileInput").addEventListener("change", () => {
       let input1 = document.querySelector("#titleForm");
       let input2 = document.querySelector("#categoryForm");
-      let submitBtn = document.querySelector("#galleryAddSubmit")
+      let submitBtn = document.querySelector("#galleryAddSubmit");
 
       if (input1.value && input2.value) {
-        submitBtn.disabled = false
+        submitBtn.disabled = false;
       }
     });
 
@@ -165,7 +165,7 @@ async function loadCreateModale() {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const formData = new FormData(form);
-      const session = window.localStorage.getItem("session");
+      const session = window.sessionStorage.getItem("session");
 
       // update object in backend
       const response = await fetch(`http://localhost:5678/api/works/`, {
@@ -182,14 +182,18 @@ async function loadCreateModale() {
         return;
       }
 
+      // reset old form
+      let submitBtn = document.querySelector("#galleryAddSubmit");
+      submitBtn.disabled = true
       form.reset();
-
+      
       // close the modal
       document.getElementById("edit").classList = "hide";
-
+      
       // close the image preview
       fileImage.className = "image";
       imagePreview.className = "hide";
+      imagePreview.innerHTML = ""
 
       // create the new work
       const data = await response.json();
@@ -257,7 +261,7 @@ function handleFilterChange(e) {
 
 // remove session and hide all admin parts without reloading page
 function handleLogout() {
-  localStorage.removeItem("session");
+  sessionStorage.removeItem("session");
 
   document.getElementById("login").classList = "";
   document.getElementById("logout").classList = "hide";
@@ -296,7 +300,10 @@ async function handleShowModale() {
 
       btn.id = work.id;
       btn.addEventListener("click", async (e) => {
-        const session = window.localStorage.getItem("session");
+        if (!window.confirm("Souhaitez-vous vraiment supprimer le projet ?")) {
+          return;
+        }
+        const session = window.sessionStorage.getItem("session");
         const id = e.target.id;
 
         const response = await fetch(`http://localhost:5678/api/works/${id}`, {
@@ -349,8 +356,8 @@ async function handleShowModale() {
 // only call in one dom element to hide modale
 function handleCloseModale() {
   document.getElementById("edit").classList = "hide";
-  document.getElementById("galleryAddForm").reset()
-  document.querySelector("#galleryAddSubmit").disabled = true
+  document.getElementById("galleryAddForm").reset();
+  document.querySelector("#galleryAddSubmit").disabled = true;
 }
 
 // here we load all function and do stuff on page load
@@ -369,7 +376,7 @@ async function pageLoad() {
   }
 
   // hide login if user is sign in, hide logout if user is not sign in
-  if (window.localStorage.getItem("session")) {
+  if (window.sessionStorage.getItem("session")) {
     document.getElementById("login").classList = "hide";
     document.getElementById("logout").classList = "";
     document.getElementById("editBtn").classList = "";
@@ -400,8 +407,8 @@ async function pageLoad() {
     });
   });
 
-  document.getElementById("galleryAddForm").reset()
-  document.querySelector("#galleryAddSubmit").disabled = true
+  document.getElementById("galleryAddForm").reset();
+  document.querySelector("#galleryAddSubmit").disabled = true;
 }
 
 pageLoad();

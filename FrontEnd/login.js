@@ -38,7 +38,7 @@ async function handleSubmit(e) {
 
     // saving session and redirecting to home
     const result = await response.json();
-    window.localStorage.setItem("session", result.token);
+    window.sessionStorage.setItem("session", result.token);
     window.location.replace("http://127.0.0.1:5501/FrontEnd/index.html");
 
     return;
@@ -53,7 +53,7 @@ function pageLoad() {
   const form = document.querySelector("#login");
 
   // if user is already logged in we redirect him to home page
-  if (window.localStorage.getItem("session")) {
+  if (window.sessionStorage.getItem("session")) {
     window.location.href = "http://127.0.0.1:5501/FrontEnd/index.html";
   }
 
